@@ -643,7 +643,7 @@ class SyncEngine:
         """
 
         # remove duplicate entries by creating set, strip trailing '/'
-        folder_set = set(f.lower().rstrip("/") for f in folder_list)
+        folder_set = {f.lower().rstrip("/") for f in folder_list}
 
         # remove all children of excluded folders
         clean_list = list(folder_set)
@@ -1951,11 +1951,9 @@ class SyncEngine:
         # representative laptops.
 
         # 1) combine moved events of folders and their children into one event
-        dir_moved_paths = set(
-            (e.src_path, e.dest_path)
+        dir_moved_paths = {(e.src_path, e.dest_path)
             for e in cleaned_events
-            if isinstance(e, DirMovedEvent)
-        )
+            if isinstance(e, DirMovedEvent)}
 
         if len(dir_moved_paths) > 0:
             child_moved_events: Dict[Tuple[str, str], List[FileSystemEvent]] = dict()
@@ -1977,9 +1975,7 @@ class SyncEngine:
                 cleaned_events.difference_update(split_events)
 
         # 2) combine deleted events of folders and their children to one event
-        dir_deleted_paths = set(
-            e.src_path for e in cleaned_events if isinstance(e, DirDeletedEvent)
-        )
+        dir_deleted_paths = {e.src_path for e in cleaned_events if isinstance(e, DirDeletedEvent)}
 
         if len(dir_deleted_paths) > 0:
             child_deleted_events: Dict[str, List[FileSystemEvent]] = dict()
@@ -2851,7 +2847,7 @@ class SyncEngine:
 
         # find out who changed the item(s), show the user name if its only a single user
         user_name: Optional[str]
-        dbid_list = set(e.change_dbid for e in changes if e.change_dbid is not None)
+        dbid_list = {e.change_dbid for e in changes if e.change_dbid is not None}
         if len(dbid_list) == 1:
             # all files have been modified by the same user
             dbid = dbid_list.pop()
