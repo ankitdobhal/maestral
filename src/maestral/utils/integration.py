@@ -167,7 +167,7 @@ def cpu_usage_percent(interval: float = 0.1) -> float:
     :returns: CPU usage during interval in percent.
     """
 
-    if not interval > 0:
+    if interval <= 0:
         raise ValueError(f"interval is not positive (got {interval!r})")
 
     def timer():
